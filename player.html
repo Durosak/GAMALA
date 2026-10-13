@@ -1006,12 +1006,13 @@ async function playIndex(i,autoplay){
     },{once:true});
     if(window.Hls&&Hls.isSupported()){
       hls=new Hls({
-        enableWorker:true,maxBufferLength:30,maxMaxBufferLength:60,backBufferLength:15,
-        startPosition:resumeAt||-1,capLevelToPlayerSize:true,
-        /* إعدادات أخف: وقت انتظار ومحاولات أقل لتجنب التعليق ومضاعفة ضغط السيرفر */
+        enableWorker:true,
+        /* مخزن أكبر لتقليل التقطيع أثناء المشاهدة */
+        maxBufferLength:60,maxMaxBufferLength:120,maxBufferSize:60*1000*1000,backBufferLength:30,
+        startFragPrefetch:true,startPosition:resumeAt||-1,capLevelToPlayerSize:true,
         manifestLoadingTimeOut:12000,manifestLoadingMaxRetry:2,manifestLoadingRetryDelay:700,manifestLoadingMaxRetryTimeout:2500,
         levelLoadingTimeOut:12000,levelLoadingMaxRetry:2,levelLoadingRetryDelay:700,levelLoadingMaxRetryTimeout:2500,
-        fragLoadingTimeOut:18000,fragLoadingMaxRetry:3,fragLoadingRetryDelay:700,fragLoadingMaxRetryTimeout:3500,
+        fragLoadingTimeOut:20000,fragLoadingMaxRetry:4,fragLoadingRetryDelay:1000,fragLoadingMaxRetryTimeout:5000,
         xhrSetup:x=>{if(token)x.setRequestHeader('Authorization','Bearer '+token)}
       });
       hls.on(Hls.Events.MANIFEST_PARSED,()=>{
